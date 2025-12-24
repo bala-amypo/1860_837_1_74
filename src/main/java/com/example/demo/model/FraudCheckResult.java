@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "fraud_check_results")
 public class FraudCheckResult {
 
     @Id
@@ -11,30 +12,71 @@ public class FraudCheckResult {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "claim_id", nullable = false)
     private Claim claim;
 
+    @Column(nullable = false)
     private Boolean isFraudulent;
+
     private String triggeredRuleName;
+
     private String rejectionReason;
+
     private LocalDateTime checkedAt;
 
+    // ✅ Auto-generate timestamp
     @PrePersist
     public void onCreate() {
-        checkedAt = LocalDateTime.now();
+        this.checkedAt = LocalDateTime.now();
     }
 
-    public FraudCheckResult() {}
+    // =====================
+    // GETTERS & SETTERS
+    // =====================
 
-    public Long getId() { return id; }
-    public Claim getClaim() { return claim; }
-    public Boolean getIsFraudulent() { return isFraudulent; }
-    public String getTriggeredRuleName() { return triggeredRuleName; }
-    public String getRejectionReason() { return rejectionReason; }
-    public LocalDateTime getCheckedAt() { return checkedAt; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
-    public void setClaim(Claim claim) { this.claim = claim; }
-    public void setIsFraudulent(Boolean isFraudulent) { this.isFraudulent = isFraudulent; }
-    public void setTriggeredRuleName(String triggeredRuleName) { this.triggeredRuleName = triggeredRuleName; }
-    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
+    public Claim getClaim() {
+        return claim;
+    }
+
+    public void setClaim(Claim claim) {
+        this.claim = claim;
+    }
+
+    public Boolean getIsFraudulent() {
+        return isFraudulent;
+    }
+
+    // 🔥 REQUIRED BY SERVICE
+    public void setFraudulent(Boolean fraudulent) {
+        this.isFraudulent = fraudulent;
+    }
+
+    public String getTriggeredRuleName() {
+        return triggeredRuleName;
+    }
+
+    public void setTriggeredRuleName(String triggeredRuleName) {
+        this.triggeredRuleName = triggeredRuleName;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public LocalDateTime getCheckedAt() {
+        return checkedAt;
+    }
+
+    // 🔥 REQUIRED BY SERVICE
+    public void setCheckedAt(LocalDateTime checkedAt) {
+        this.checkedAt = checkedAt;
+    }
 }
