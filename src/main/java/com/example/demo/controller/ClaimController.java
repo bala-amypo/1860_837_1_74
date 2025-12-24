@@ -2,30 +2,25 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Claim;
 import com.example.demo.service.ClaimService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/claims")
+@RequestMapping("/api/claims")
 public class ClaimController {
 
-    @Autowired
-    private ClaimService claimService;
+    private final ClaimService claimService;
 
-    @PostMapping
-    public Claim createClaim(@RequestBody Claim claim) {
-        return claimService.createClaim(claim);
+    public ClaimController(ClaimService claimService) {
+        this.claimService = claimService;
     }
 
-    @GetMapping
-    public List<Claim> getAllClaims() {
-        return claimService.getAllClaims();
+    @PostMapping("/{policyId}")
+    public Claim create(@PathVariable Long policyId, @RequestBody Claim claim) {
+        return claimService.createClaim(policyId, claim);
     }
 
     @GetMapping("/{id}")
-    public Claim getClaim(@PathVariable Long id) {
+    public Claim get(@PathVariable Long id) {
         return claimService.getClaimById(id);
     }
 }

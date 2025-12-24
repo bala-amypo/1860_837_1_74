@@ -1,20 +1,26 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Claim;
+import com.example.demo.model.FraudCheckResult;
 import com.example.demo.service.FraudDetectionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/fraud-detection")
+@RequestMapping("/api/fraud-check")
 public class FraudDetectionController {
 
-    @Autowired
-    private FraudDetectionService fraudDetectionService;
+    private final FraudDetectionService fraudDetectionService;
 
-    @PostMapping("/check")
-    public String detectFraud(@RequestBody Claim claim) {
-        boolean fraud = fraudDetectionService.isFraudulent(claim);
-        return fraud ? "Fraud detected" : "Claim is safe";
+    public FraudDetectionController(FraudDetectionService fraudDetectionService) {
+        this.fraudDetectionService = fraudDetectionService;
+    }
+
+    @PostMapping("/evaluate/{claimId}")
+    public FraudCheckResult evaluate(@PathVariable Long claimId) {
+        return fraudDetectionService.evaluateClaim(claimId);
+    }
+
+    @GetMapping("/result/claim/{claimId}")
+    public FraudCheckResult result(@PathVariable Long claimId) {
+        return fraudDetectionService.getResultByClaimId(claimId);
     }
 }
