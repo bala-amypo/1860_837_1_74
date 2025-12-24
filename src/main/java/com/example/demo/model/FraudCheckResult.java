@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "fraud_check_results")
 public class FraudCheckResult {
 
     @Id
@@ -20,18 +19,22 @@ public class FraudCheckResult {
     private LocalDateTime checkedAt;
 
     @PrePersist
-    public void prePersist() {
-        this.checkedAt = LocalDateTime.now();
+    public void onCreate() {
+        checkedAt = LocalDateTime.now();
     }
 
     public FraudCheckResult() {}
 
-    public FraudCheckResult(Claim claim, Boolean isFraudulent,
-                            String triggeredRuleName, String rejectionReason) {
-        this.claim = claim;
-        this.isFraudulent = isFraudulent;
-        this.triggeredRuleName = triggeredRuleName;
-        this.rejectionReason = rejectionReason;
-    }
-    // getters & setters
+    public Long getId() { return id; }
+    public Claim getClaim() { return claim; }
+    public Boolean getIsFraudulent() { return isFraudulent; }
+    public String getTriggeredRuleName() { return triggeredRuleName; }
+    public String getRejectionReason() { return rejectionReason; }
+    public LocalDateTime getCheckedAt() { return checkedAt; }
+
+    public void setId(Long id) { this.id = id; }
+    public void setClaim(Claim claim) { this.claim = claim; }
+    public void setIsFraudulent(Boolean isFraudulent) { this.isFraudulent = isFraudulent; }
+    public void setTriggeredRuleName(String triggeredRuleName) { this.triggeredRuleName = triggeredRuleName; }
+    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
 }
