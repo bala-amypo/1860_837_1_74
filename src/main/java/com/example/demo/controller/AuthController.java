@@ -23,14 +23,17 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
 
-        User user = userService.login(
+        // ✅ login() returns JWT token
+        String token = userService.login(
                 request.getEmail(),
                 request.getPassword()
         );
 
-        // ✅ FIXED CONSTRUCTOR USAGE
+        // ✅ fetch user separately
+        User user = userService.getByEmail(request.getEmail());
+
         return new AuthResponse(
-                user.getToken(),
+                token,
                 user.getId(),
                 user.getEmail(),
                 user.getRole()
