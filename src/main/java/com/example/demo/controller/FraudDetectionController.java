@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.FraudCheckResult;
 import com.example.demo.service.FraudDetectionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,12 +16,12 @@ public class FraudDetectionController {
     }
 
     @PostMapping("/evaluate/{claimId}")
-    public FraudCheckResult evaluate(@PathVariable Long claimId) {
-        return fraudDetectionService.evaluateClaim(claimId);
+    public ResponseEntity<FraudCheckResult> evaluate(@PathVariable Long claimId) {
+        return ResponseEntity.ok(fraudDetectionService.evaluateClaim(claimId));
     }
 
     @GetMapping("/result/claim/{claimId}")
-    public FraudCheckResult result(@PathVariable Long claimId) {
-        return fraudDetectionService.getResultByClaimId(claimId);
+    public ResponseEntity<FraudCheckResult> getResult(@PathVariable Long claimId) {
+        return ResponseEntity.ok(fraudDetectionService.getResultByClaimId(claimId));
     }
 }
