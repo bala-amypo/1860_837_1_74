@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ClaimDto;
 import com.example.demo.model.Claim;
 import com.example.demo.service.ClaimService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/claims")
@@ -13,30 +15,42 @@ public class ClaimController {
 
     private final ClaimService claimService;
 
-    // ✅ Constructor Injection (CORRECT)
     public ClaimController(ClaimService claimService) {
         this.claimService = claimService;
     }
 
-    // ✅ CREATE CLAIM (Policy ID REQUIRED)
-    @PostMapping("/policy/{policyId}")
-    public ResponseEntity<Claim> createClaim(
-            @PathVariable Long policyId,
-            @RequestBody Claim claim) {
+    @PostMapping("/{policyId}")
+    public ResponseEntity<ClaimDto> createClaim(@PathVariable Long policyId, @RequestBody ClaimDto dto) {
+        Claim claim = new Claim();
+        claim.setClaimDate(dto.getClaimDate());
+        claim.setClaimAmount(dto.getClaimAmount());
+        claim.setDescription(dto.getDescription());
+        // status is set in service to PENDING if null
 
-        Claim savedClaim = claimService.createClaim(policyId, claim);
-        return ResponseEntity.ok(savedClaim);
+        Claim saved = claimService.createClaim(policyId, claim);
+        return ResponseEntity.ok(mapToDto(saved));
     }
 
-    // ✅ GET CLAIM BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Claim> getClaimById(@PathVariable Long id) {
-        return ResponseEntity.ok(claimService.getClaimById(id));
+    public ResponseEntity<ClaimDto> getClaim(@PathVariable Long id) {
+        Claim claim = claimService.getClaim(id);
+        return ResponseEntity.ok(mapToDto(claim));
     }
 
-    // ✅ GET ALL CLAIMS
     @GetMapping
-    public ResponseEntity<List<Claim>> getAllClaims() {
-        return ResponseEntity.ok(claimService.getAllClaims());
+    public ResponseEntity<List<ClaimDto>> getAllClaims() {
+        List<Claim> claims = claimService.getAllClaims();
+        return ResponseEntity.ok(claims.stream().map(this::mapToDto).collect(Collectors.toList()));
+    }
+
+    private ClaimDto mapToDto(Claim claim) {
+        ClaimDto dto = new ClaimDto();
+        dto.setId(claim.getId());
+        dto.setPolicyId(claim.getPolicy().getId());
+        dto.setClaimDate(claim.getClaimDate());
+        dto.setClaimAmount(claim.getClaimAmount());
+        dto.setDescription(claim.getDescription());
+        dto.setStatus(claim.getStatus());
+        return dto;
     }
 }

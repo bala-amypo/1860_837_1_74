@@ -1,38 +1,12 @@
-package com.example.demo.model;
+package com.example.demo.dto;
 
-import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-
-@Entity
-@Table(name = "fraud_rules")
-public class FraudRule {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FraudRuleDto {
     private Long id;
-
-    @Column(unique = true)
     private String ruleName;
-
     private String conditionField;
     private String operator;
     private String value;
-    private String severity; // LOW, MEDIUM, HIGH
-
-    @ManyToMany(mappedBy = "suspectedRules")
-    private Set<Claim> claims = new HashSet<>();
-
-    public FraudRule() {
-    }
-
-    public FraudRule(String ruleName, String conditionField, String operator, String value, String severity) {
-        this.ruleName = ruleName;
-        this.conditionField = conditionField;
-        this.operator = operator;
-        this.value = value;
-        this.severity = severity;
-    }
+    private String severity;
 
     public Long getId() {
         return id;
@@ -80,13 +54,5 @@ public class FraudRule {
 
     public void setSeverity(String severity) {
         this.severity = severity;
-    }
-
-    public Set<Claim> getClaims() {
-        return claims;
-    }
-
-    public void setClaims(Set<Claim> claims) {
-        this.claims = claims;
     }
 }

@@ -1,17 +1,10 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(
-    name = "users",
-    uniqueConstraints = @UniqueConstraint(columnNames = "email")
-)
+@Table(name = "users")
 public class User {
 
     @Id
@@ -19,15 +12,20 @@ public class User {
     private Long id;
 
     private String name;
-    private String email;
-    private String password;
-    private String role;
 
-    // Mandatory no-arg constructor
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+
+    private String role; // "USER" or "ADMIN"
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Policy> policies;
+
     public User() {
     }
 
-    // Constructor used in tests / registration
     public User(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
@@ -73,5 +71,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<Policy> getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(List<Policy> policies) {
+        this.policies = policies;
     }
 }

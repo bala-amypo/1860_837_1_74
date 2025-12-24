@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.FraudCheckResultDto;
 import com.example.demo.model.FraudCheckResult;
 import com.example.demo.service.FraudDetectionService;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,24 @@ public class FraudDetectionController {
     }
 
     @PostMapping("/evaluate/{claimId}")
-    public ResponseEntity<FraudCheckResult> evaluate(@PathVariable Long claimId) {
-        return ResponseEntity.ok(fraudDetectionService.evaluateClaim(claimId));
+    public ResponseEntity<FraudCheckResultDto> evaluateClaim(@PathVariable Long claimId) {
+        FraudCheckResult result = fraudDetectionService.evaluateClaim(claimId);
+        return ResponseEntity.ok(mapToDto(result));
     }
 
     @GetMapping("/result/claim/{claimId}")
-    public ResponseEntity<FraudCheckResult> getResult(@PathVariable Long claimId) {
-        return ResponseEntity.ok(fraudDetectionService.getResultByClaimId(claimId));
+    public ResponseEntity<FraudCheckResultDto> getResultByClaim(@PathVariable Long claimId) {
+        FraudCheckResult result = fraudDetectionService.getResultByClaim(claimId);
+        return ResponseEntity.ok(mapToDto(result));
+    }
+
+    private FraudCheckResultDto mapToDto(FraudCheckResult result) {
+        FraudCheckResultDto dto = new FraudCheckResultDto();
+        dto.setClaimId(result.getClaim().getId());
+        dto.setIsFraudulent(result.getIsFraudulent());
+        dto.setTriggeredRuleName(result.getTriggeredRuleName());
+        dto.setRejectionReason(result.getRejectionReason());
+        dto.setCheckedAt(result.getCheckedAt());
+        return dto;
     }
 }
