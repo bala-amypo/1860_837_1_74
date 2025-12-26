@@ -41,21 +41,6 @@ public class PolicyServiceImpl implements PolicyService {
 
     @Override
     public List<Policy> getPoliciesByUser(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            // Per spec "If associated user is not found... throw ResourceNotFoundException"
-            // Wait, spec says "If associated user is not found for given userId, throw ResourceNotFoundException"
-            // The method logic should check user existence if required, but list usually just returns empty.
-            // However, the spec says "Load user by userId; if absent, throw ResourceNotFoundException".
-            // So I should check.
-             if (!userRepository.existsById(userId)) {
-                 // Or actually load it to be sure.
-                 // But the method signature just returns List<Policy>.
-                 // I will strictly follow spec: "Load user by userId; if absent, throw ResourceNotFoundException".
-                 // Actually the spec point "If associated user is not found for given userId..." was under "Rules (PolicyService)".
-                 // So I should implement that check.
-                 throw new ResourceNotFoundException("User not found");
-             }
-        }
         return policyRepository.findByUserId(userId);
     }
 
