@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+69package com.example.demo.controller;
 
 import com.example.demo.dto.FraudCheckResultDto;
 import com.example.demo.model.FraudCheckResult;
